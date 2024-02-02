@@ -3,10 +3,9 @@ package com.loiane.crudspring.controller;
 import com.loiane.crudspring.model.Curso;
 import com.loiane.crudspring.repository.CursoRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +19,25 @@ public class CursoController {
 
     @GetMapping
     public List<Curso> list () {
+
         return cursoRepository.findAll();
+    }
+
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public Curso create(@RequestBody Curso curso){
+
+        return cursoRepository.save(curso);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Curso> findById(@PathVariable Long id ){
+
+        return cursoRepository.findById(id)
+                .map(record -> ResponseEntity.ok().body(record))
+                .orElse(ResponseEntity.notFound().build());
+
     }
 
 }
